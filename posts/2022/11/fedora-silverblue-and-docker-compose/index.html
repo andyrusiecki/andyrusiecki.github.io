@@ -1,0 +1,249 @@
+<!doctype html><html lang=en>
+<head>
+<title>
+Fedora Silverblue and Docker Compose · Andy Rusiecki
+</title>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=color-scheme content="light dark">
+<meta name=author content="Andy Rusiecki">
+<meta name=description content="Getting Docker Compose up and running on Fedora Silverblue">
+<meta name=keywords content="blog,developer,personal">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Fedora Silverblue and Docker Compose">
+<meta name=twitter:description content="Getting Docker Compose up and running on Fedora Silverblue">
+<meta property="og:title" content="Fedora Silverblue and Docker Compose">
+<meta property="og:description" content="Getting Docker Compose up and running on Fedora Silverblue">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/posts/2022/11/fedora-silverblue-and-docker-compose/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2022-11-23T17:46:09+00:00">
+<meta property="article:modified_time" content="2022-11-23T17:46:09+00:00">
+<link rel=canonical href=/posts/2022/11/fedora-silverblue-and-docker-compose/>
+<link rel=preload href="/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin>
+<link rel=stylesheet href=/css/coder.min.c4d7e93a158eda5a65b3df343745d2092a0a1e2170feeec909b8a89443903c6a.css integrity="sha256-xNfpOhWO2lpls980N0XSCSoKHiFw/u7JCbiolEOQPGo=" crossorigin=anonymous media=screen>
+<link rel=stylesheet href=/css/coder-dark.min.78b5fe3864945faf5207fb8fe3ab2320d49c3365def0e88ac1df0ddadc54a03c.css integrity="sha256-eLX+OGSUX69SB/uP46sjINScM2Xe8OiKwd8N2txUoDw=" crossorigin=anonymous media=screen>
+<link rel=stylesheet href=/scss/code-blocks.min.e79268dfb063da79bf3f72bd3e690b611b6b8823d2b15e775cdecf4c4224c3d8.css integrity="sha256-55Jo37Bj2nm/P3K9PmkLYRtriCPSsV53XN7PTEIkw9g=" crossorigin=anonymous media=screen>
+<link rel=stylesheet href=/scss/theme-colors.min.c87b106aee9bae9fb6402c0e025d47c16340338497e79569c975e2dd764a86e3.css integrity="sha256-yHsQau6brp+2QCwOAl1HwWNAM4SX55VpyXXi3XZKhuM=" crossorigin=anonymous media=screen>
+<link rel=icon type=image/png href=/images/favicon-32x32.png sizes=32x32>
+<link rel=icon type=image/png href=/images/favicon-16x16.png sizes=16x16>
+<link rel=apple-touch-icon href=/images/apple-touch-icon.png>
+<link rel=apple-touch-icon sizes=180x180 href=/images/apple-touch-icon.png>
+<link rel=manifest href=/site.webmanifest>
+<link rel=mask-icon href=/images/safari-pinned-tab.svg color=#5bbad5>
+<meta name=generator content="Hugo 0.90.1">
+</head>
+<body class="preload-transitions colorscheme-auto">
+<div class=float-container>
+<a id=dark-mode-toggle class=colorscheme-toggle>
+<i class="fa fa-adjust fa-fw" aria-hidden=true></i>
+</a>
+</div>
+<main class=wrapper>
+<nav class=navigation>
+<section class=container>
+<a class=navigation-title href=/>
+Andy Rusiecki
+</a>
+<input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle>
+<i class="fa fa-bars fa-fw" aria-hidden=true></i>
+</label>
+<ul class=navigation-list>
+<li class=navigation-item>
+<a class=navigation-link href=/posts/>Blog</a>
+</li>
+</ul>
+</section>
+</nav>
+<div class=content>
+<section class="container post">
+<article>
+<header>
+<div class=post-title>
+<h1 class=title>
+<a class=title-link href=/posts/2022/11/fedora-silverblue-and-docker-compose/>
+Fedora Silverblue and Docker Compose
+</a>
+</h1>
+</div>
+<div class=post-meta>
+<div class=date>
+<span class=posted-on>
+<i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2022-11-23T17:46:09Z>
+November 23, 2022
+</time>
+</span>
+<span class=reading-time>
+<i class="fa fa-clock-o" aria-hidden=true></i>
+5-minute read
+</span>
+</div>
+<div class=categories>
+<i class="fa fa-folder" aria-hidden=true></i>
+<a href=/categories/fedora-silverblue/>Fedora Silverblue</a>
+<span class=separator>•</span>
+<a href=/categories/docker/>Docker</a></div>
+<div class=tags>
+<i class="fa fa-tag" aria-hidden=true></i>
+<span class=tag>
+<a href=/tags/fedora/>fedora</a>
+</span>
+<span class=separator>•</span>
+<span class=tag>
+<a href=/tags/silverblue/>silverblue</a>
+</span>
+<span class=separator>•</span>
+<span class=tag>
+<a href=/tags/docker/>docker</a>
+</span>
+<span class=separator>•</span>
+<span class=tag>
+<a href=/tags/podman/>podman</a>
+</span>
+<span class=separator>•</span>
+<span class=tag>
+<a href=/tags/vscode/>vscode</a>
+</span></div>
+</div>
+</header>
+<div>
+<p>I&rsquo;ve been playing with <a href=https://silverblue.fedoraproject.org/>Fedora Silverblue</a> on and off for the past few months, switching between it and <a href=https://getfedora.org/en/workstation/>Fedora Workstation</a> on my current laptop.</p>
+<p>At first glance there isn&rsquo;t much of a difference between the two, both show a GNOME desktop environment that&rsquo;s almost identical. The main difference is that Fedora Silverblue is a variant of Fedora that uses an immutable base system.</p>
+<p>The TL;DR for Silverblue is that you can&rsquo;t install packages as you would in Workstation. Instead you can install applications via <a href=https://flatpak.org/>Flatpak</a>, from Fedora&rsquo;s repository or any other like <a href=https://flathub.org/home>Flathub</a>, or you can create a Toolbox, a Fedora based container where you can install packages just like in Workstation. These containers are run using <a href=https://podman.io/>Podman</a> in the base system.</p>
+<h2 id=what-if-i-need-docker>
+What if I need Docker?
+<a class=heading-link href=#what-if-i-need-docker>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h2>
+<p>In most cases, I&rsquo;ve found Podman to be a drop in replacement for <a href=https://www.docker.com/>Docker</a>. The only real issue I ran into was when I wanted to use Docker Compose for local development. When a company&rsquo;s projects already have a workflow using Docker Compose, rewriting pieces of it to work with Podman isn&rsquo;t the best option.</p>
+<p>I researched various ways to solve this issue, but the best solution I found was to use <code>docker-compose</code> within a toolbox in combination with <code>podman-remote</code> which can talk to the host&rsquo;s podman engine.</p>
+<h2 id=how-to-get-docker-compose-working>
+How to get Docker Compose working
+<a class=heading-link href=#how-to-get-docker-compose-working>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h2>
+<p>For this walkthrough there are steps that are specific to the host and the toolbox container. Steps specifically for one or the other will be labeled with &ldquo;HOST:&rdquo; or &ldquo;TOOLBOX:&rdquo; to keep things clear.</p>
+<p>If you don&rsquo;t already have a toolbox container ready you can easily create one with the following:</p>
+<div class=highlight><pre tabindex=0 style=color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#007f7f># using &#34;dev&#34; below as the container name</span>
+toolbox create dev
+</code></pre></div><h3 id=host-start-and-enable-the-podman-socket>
+HOST: Start and Enable the Podman Socket
+<a class=heading-link href=#host-start-and-enable-the-podman-socket>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h3>
+<p>In order for <code>podman-remote</code> to be able to connect to the host&rsquo;s podman engine we need to start the podman socket to allow communication between the host and toolbox container.</p>
+<p>We can do this through systemd services, starting and enabling the podman socket with the <code>--user</code> argument as they don&rsquo;t need root access:</p>
+<div class=highlight><pre tabindex=0 style=color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>systemctl --user <span style=color:#fff;font-weight:700>enable</span> podman.socket
+systemctl --user start podman.socket
+</code></pre></div><p>Afterwards take note of the socket used in the output of:</p>
+<div class=highlight><pre tabindex=0 style=color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>systemctl --user status podman.socket
+</code></pre></div><p>In my case the socket used is <code>unix:///run/user/1000/podman/podman.sock</code></p>
+<h3 id=add-docker-host-environment-variable-to-bashrc-or-shell-configs>
+Add Docker host environment variable to .bashrc or shell configs
+<a class=heading-link href=#add-docker-host-environment-variable-to-bashrc-or-shell-configs>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h3>
+<p><code>docker-compose</code> will require a <code>DOCKER_HOST</code> environment variable set in order for it to use the podman socket we just set. For example, this line can be added to your <code>~/.bashrc</code> file if using a bash shell:</p>
+<div class=highlight><pre tabindex=0 style=color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#fff;font-weight:700>export</span> DOCKER_HOST=unix:///run/user/1000/podman/podman.sock
+</code></pre></div><h3 id=toolbox-install-podmandocker-dependencies>
+TOOLBOX: Install podman/docker dependencies
+<a class=heading-link href=#toolbox-install-podmandocker-dependencies>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h3>
+<p>Now we&rsquo;re ready to work inside our toolbox! Enter your toolbox and update existing packages if you haven&rsquo;t already:</p>
+<div class=highlight><pre tabindex=0 style=color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#007f7f># assuming &#34;dev&#34; is the toolbox name</span>
+toolbox enter dev
+sudo dnf update
+</code></pre></div><p>Next we&rsquo;ll want to install <code>podman-remote</code> and <code>docker-compose</code>. <code>podman-remote</code> is basically the same as installing <code>podman</code> and always assuming we want to add the <code>--remote</code> argument. Using <code>podman-remote</code> here just makes this easier.
+Then go to <code>/usr/bin/</code> and add symlinks for <code>podman</code> and <code>docker</code> pointing to <code>podman-remote</code></p>
+<div class=highlight><pre tabindex=0 style=color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo dnf install -y podman-remote docker-compose
+sudo ln -s /usr/bin/podman-remote /usr/bin/podman
+sudo ln -s /usr/bin/podman-remote /usr/bin/docker
+</code></pre></div><h3 id=selinux-issues>
+SELinux issues
+<a class=heading-link href=#selinux-issues>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h3>
+<p>If you have <code>Permission Denied</code> errors when running <code>docker-compose</code> now, it&rsquo;s likely due to SELinux. To bypass SELinux for containers add these lines to your <code>~/.config/containers/containers.conf</code> file (creating it if needed):</p>
+<div class=highlight><pre tabindex=0 style=color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>[containers]
+label = false
+</code></pre></div><h3 id=optional-for-best-docker-compatibility>
+Optional: For best Docker compatibility
+<a class=heading-link href=#optional-for-best-docker-compatibility>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h3>
+<p>If you were previously used to Docker, you likely have Dockerfiles that reference images with unqualified names.</p>
+<p>For example, when using Docker you could pull the latest Ubuntu image from Docker Hub with just <code>docker pull ubuntu:latest</code>. When we use <code>podman</code> it doesn&rsquo;t assume that we want to use Docker Hub so it may ask what repository we want to use when looking for the Ubuntu image. With Podman we need to use the fully qualified image name of <code>docker.io/library/ubuntu:latest</code>.</p>
+<p>We can change this to be more like Docker (useful if working with scripts that assume docker usage) by creating a file at <code>~/.config/containers/registries.conf</code> with the following content:</p>
+<div class=highlight><pre tabindex=0 style=color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>unqualified-search-registries = [&#34;docker.io&#34;]
+</code></pre></div><h2 id=extra-getting-vs-code-connected-to-toolbox>
+Extra: Getting VS Code connected to toolbox
+<a class=heading-link href=#extra-getting-vs-code-connected-to-toolbox>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h2>
+<p>If using VS Code, I&rsquo;ve found getting it connected to a toolbox container to be a bit of a pain. You can use owtaylor&rsquo;s <a href=https://github.com/owtaylor/toolbox-vscode>Toolbox Visual Studio Code integration</a> tool, but in the end I preferred to simply install VS Code within the toolbox container so that no extra connection is necessary.</p>
+<h3 id=install-vs-code-inside-toolbox>
+Install VS Code inside toolbox
+<a class=heading-link href=#install-vs-code-inside-toolbox>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h3>
+<p>In our toolbox we can simply install VS Code according to Microsoft&rsquo;s existing <a href=https://code.visualstudio.com/docs/setup/linux#_rhel-fedora-and-centos-based-distributions>Fedora Installation Instructions</a>:</p>
+<div class=highlight><pre tabindex=0 style=color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+sudo sh -c <span style=color:#0ff;font-weight:700>&#39;echo -e &#34;[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc&#34; &gt; /etc/yum.repos.d/vscode.repo&#39;</span>
+dnf check-update
+sudo dnf install code
+</code></pre></div><h3 id=create-desktop-entry-from-toolbox>
+Create desktop entry from toolbox
+<a class=heading-link href=#create-desktop-entry-from-toolbox>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h3>
+<p>Now we can start VS Code from the command line within the toolbox just fine, but what if we want to see the application in our launcher?</p>
+<p>We&rsquo;ll first need to copy the <code>code.desktop</code> file from the toolbox container&rsquo;s <code>/usr/share/applications</code> to <code>~/.local/share/applications</code>. Then we&rsquo;ll need to edit the new copy, prepending each <code>Exec</code> command with <code>toolbox run --container dev</code> (again assuming your toolbox name is &ldquo;dev&rdquo; here).</p>
+<p>We should now have a desktop entry appearing in our launcher, though the VS Code icon is missing. To fix this, we&rsquo;ll need to copy the icon file located in our toolbox at <code>/usr/share/pixmaps/com.visualstudio.code.png</code> to <code>~/.icons</code></p>
+</div>
+<footer>
+<div id=disqus_thread></div>
+<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//andyrusiecki-blog.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</footer>
+</article>
+</section>
+</div>
+<footer class=footer>
+<section class=container>
+©
+2021 -
+2022
+Andy Rusiecki
+·
+Powered by <a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a>.
+</section>
+</footer>
+</main>
+<script src=/js/coder.min.08fc7a7924db1ae6786408cb68e12ff953e6329376a469f5f517f3769c19194d.js integrity="sha256-CPx6eSTbGuZ4ZAjLaOEv+VPmMpN2pGn19RfzdpwZGU0="></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FR5C70WTFY"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-FR5C70WTFY',{anonymize_ip:!1})}</script>
+</body>
+</html>
